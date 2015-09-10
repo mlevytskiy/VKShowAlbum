@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 Properties properties = new Properties()
-properties.load(project.rootProject.file('vkSecretKey.txt').newDataInputStream())
+properties.load(project.rootProject.file('vkSensitiveData.txt').newDataInputStream())
 
 def com_vk_sdk_AppId = properties.getProperty("com_vk_sdk_AppId")
 

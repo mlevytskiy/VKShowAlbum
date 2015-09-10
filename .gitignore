@@ -6,5 +6,5 @@
 gradle
 gradlew.bat
 gradlew
-/vkSecretKey.txt
+/vkSensitiveData.txt
 gradle.properties
