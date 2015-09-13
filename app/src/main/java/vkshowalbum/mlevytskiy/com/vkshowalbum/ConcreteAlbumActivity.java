@@ -30,11 +30,16 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
 
     public static final String ALBUM = "album";
     public static final String USER_ID = "userId";
+    private static final String PHOTOS = "photos";
+    private static final String TITLE = "title";
+
     private GridView gridView;
     private Album album;
     private int userId;
     private int albumId;
     private AlbumAdapter adapter;
+
+    private VKList<VKApiPhoto> photos;
 
     @CallSuper
     public void onCreate(Bundle bundle) {
@@ -53,21 +58,50 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        Intent intent = getIntent();
-        if (intent != null) {
-            album = intent.getParcelableExtra(ALBUM);
-            if (album.isCustomAlbum()) {
-                adapter = new AlbumAdapter(getBaseContext(), album.getCustomAlbum().photos);
-                setTitle(album.getCustomAlbum().getTitleId());
-                gridView.setAdapter(adapter);
-            } else {
-                userId = intent.getIntExtra(USER_ID, -1);
-                albumId = album.getVkApiPhotoAlbum().getId();
-                loadPhotos(albumId, userId);
-                setTitle(album.getVkApiPhotoAlbum().title);
-            }
+        if (bundle != null) {
+            //do nothing
+        } else {
+            Intent intent = getIntent();
+            if (intent != null) {
+                album = intent.getParcelableExtra(ALBUM);
+                if (album.isCustomAlbum()) {
+                    adapter = new AlbumAdapter(getBaseContext(), album.getCustomAlbum().photos);
+                    setTitle(album.getCustomAlbum().getTitleId());
+                    gridView.setAdapter(adapter);
+                } else {
+                    userId = intent.getIntExtra(USER_ID, -1);
+                    albumId = album.getVkApiPhotoAlbum().getId();
+                    loadPhotos(albumId, userId);
+                    setTitle(album.getVkApiPhotoAlbum().title);
+                }
 
+            }
         }
+    }
+
+    @CallSuper
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        album = savedInstanceState.getParcelable(ALBUM);
+        userId = savedInstanceState.getInt(USER_ID);
+        albumId = album.isCustomAlbum() ? 0 : album.getVkApiPhotoAlbum().getId();
+        photos = savedInstanceState.getParcelable(PHOTOS);
+
+        if (album.isCustomAlbum()) {
+            gridView.setAdapter(new AlbumAdapter(getBaseContext(), album.getCustomAlbum().photos));
+        } else {
+            gridView.setAdapter(new AlbumAdapter(getBaseContext(), photos));
+        }
+
+        setTitle(savedInstanceState.getString(TITLE));
+
+    }
+
+    @CallSuper
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(ALBUM, album);
+        savedInstanceState.putInt(USER_ID, userId);
+        savedInstanceState.putParcelable(PHOTOS, photos);
+        savedInstanceState.putString(TITLE, getTitle().toString());
     }
 
     @Override
@@ -88,7 +122,8 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
                 gridView.setEmptyView(findViewById(android.R.id.empty));
-                adapter = new AlbumAdapter(getBaseContext(), new VKList<VKApiPhoto>(response.json, VKApiPhoto.class));
+                photos = new VKList<VKApiPhoto>(response.json, VKApiPhoto.class);
+                adapter = new AlbumAdapter(getBaseContext(), photos);
                 gridView.setAdapter(adapter);
                 progress.dismiss();
             }
