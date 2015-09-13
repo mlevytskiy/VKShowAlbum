@@ -1,5 +1,6 @@
 package vkshowalbum.mlevytskiy.com.vkshowalbum.support;
 
+import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKBatchRequest;
 import com.vk.sdk.api.VKError;
@@ -8,6 +9,7 @@ import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiPhoto;
 import com.vk.sdk.api.model.VKApiPhotoAlbum;
+import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
 import java.util.ArrayList;
@@ -20,6 +22,18 @@ import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbumType;
  * Created by max on 12.09.15.
  */
 public class AlbumsLoadHelper {
+
+    public void loadWithoutUserId(final Callback callback, final InitUserIdCallback initUserIdCallback) {
+        VKRequest request = VKApi.users().get();
+        request.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                int userId = ((VKApiUserFull) ((VKList) response.parsedModel).get(0)).getId();
+                initUserIdCallback.onSuccess(userId);
+                load(userId, callback);
+            }
+        });
+    }
 
     public void load(final int userId, final Callback callback) {
         VKRequest userAlbumsRequest = new VKRequest("photos.getAlbums", VKParameters.from(VKApiConst.OWNER_ID, userId, "need_covers", 1, "need_system", 1));
