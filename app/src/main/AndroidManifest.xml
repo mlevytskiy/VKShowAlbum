@@ -22,6 +22,8 @@
 
         <activity android:name=".ConcreteAlbumActivity" />
 
+        <activity android:name=".PhotoActivity" />
+
         <activity android:name="com.vk.sdk.VKOpenAuthActivity" />
 
         <activity android:name="com.vk.sdk.VKServiceActivity"

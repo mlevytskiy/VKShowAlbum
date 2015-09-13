@@ -22,7 +22,11 @@ public class ImageLoader {
         picasso = Picasso.with(context);
     }
 
-    public void loadImage(final ImageView imageView, String url) {
+    public void loadImage(ImageView imageView, String url) {
+        loadImage(imageView, url, null);
+    }
+
+    public void loadImage(final ImageView imageView, String url, final Callback callback) {
         if (TextUtils.isEmpty(url)) {
             imageView.setImageDrawable(null);
             return;
@@ -39,13 +43,21 @@ public class ImageLoader {
                     public void onSuccess() {
                         imageView.setScaleType(defaultScaleType);
                         imageView.setTag(IMAGE_LOADER_TAG_KEY, ImageLoadingState.success);
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
                     }
 
                     @Override
                     public void onError() {
                         imageView.setTag(IMAGE_LOADER_TAG_KEY, ImageLoadingState.error);
+                        if (callback != null) {
+                            callback.onError();
+                        }
                     }
                 });
     }
+
+
 
 }

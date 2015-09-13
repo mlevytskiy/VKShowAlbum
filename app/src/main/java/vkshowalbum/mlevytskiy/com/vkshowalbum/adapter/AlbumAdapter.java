@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import com.vk.sdk.api.model.VKApiPhoto;
 import com.vk.sdk.api.model.VKList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vkshowalbum.mlevytskiy.com.vkshowalbum.R;
@@ -21,32 +20,24 @@ import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoader;
  */
 public class AlbumAdapter extends BaseAdapter {
 
-    private List<String> photoUrls;
+    private List<VKApiPhoto> photos;
     private LayoutInflater layoutInflater;
     private ImageLoader imageLoader;
 
     public AlbumAdapter(Context context, VKList<VKApiPhoto> photos) {
         layoutInflater = LayoutInflater.from(context);
         imageLoader = new ImageLoader(context);
-        photoUrls = getStrPhotos(photos);
-    }
-    
-    private List<String> getStrPhotos(List<VKApiPhoto> photos) {
-        List<String> array = new ArrayList<>();
-        for (VKApiPhoto vkApiPhoto : photos) {
-            array.add(vkApiPhoto.photo_130);
-        }
-        return array;
+        this.photos = photos;
     }
 
     @Override
     public int getCount() {
-        return photoUrls.size();
+        return photos.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return photoUrls.get(position);
+    public VKApiPhoto getItem(int position) {
+        return photos.get(position);
     }
 
     @Override
@@ -59,7 +50,7 @@ public class AlbumAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.item_photo, parent, false);
         }
-        imageLoader.loadImage((ImageView) convertView, photoUrls.get(position));
+        imageLoader.loadImage((ImageView) convertView, photos.get(position).photo_130);
         return convertView;
     }
 
