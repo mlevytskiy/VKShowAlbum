@@ -13,8 +13,8 @@ import com.vk.sdk.api.model.VKList;
 import java.util.ArrayList;
 import java.util.List;
 
-import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.albumsAdapterImpl.CustomAlbum;
-import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.albumsAdapterImpl.CustomAlbumType;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbum;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbumType;
 
 /**
  * Created by max on 12.09.15.
@@ -22,17 +22,10 @@ import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.albumsAdapterImpl.CustomAl
 public class AlbumsLoadHelper {
 
     public void load(final int userId, final Callback callback) {
-        VKRequest userAlbumsRequest = new VKRequest("photos.getAlbums", VKParameters.from(VKApiConst.OWNER_ID, userId, "need_covers", 1));
-        VKRequest photoWitMyRequest = new VKRequest("photos.getUserPhotos", VKParameters.from(VKApiConst.OWNER_ID, userId));
-        VKRequest profilePhotoRequest = new VKRequest("photos.get", VKParameters.from(VKApiConst.OWNER_ID,
-                userId, VKApiConst.ALBUM_ID, "profile"));
-        VKRequest savedPhotoRequest = new VKRequest("photos.get", VKParameters.from(VKApiConst.OWNER_ID,
-                userId, VKApiConst.ALBUM_ID, "saved"));
+        VKRequest userAlbumsRequest = new VKRequest("photos.getAlbums", VKParameters.from(VKApiConst.OWNER_ID, userId, "need_covers", 1, "need_system", 1));
+        VKRequest photoWitMeRequest = new VKRequest("photos.getUserPhotos", VKParameters.from(VKApiConst.OWNER_ID, userId));
 
-        VKRequest wallPhotosRequest = new VKRequest("photos.get", VKParameters.from(VKApiConst.OWNER_ID,
-                userId, VKApiConst.ALBUM_ID, "wall"));
-
-        VKBatchRequest vkBatchRequest = new VKBatchRequest(userAlbumsRequest, photoWitMyRequest, profilePhotoRequest, savedPhotoRequest, wallPhotosRequest);
+        VKBatchRequest vkBatchRequest = new VKBatchRequest(userAlbumsRequest, photoWitMeRequest);
 
         vkBatchRequest.executeWithListener(new VKBatchRequest.VKBatchRequestListener() {
             @Override
@@ -40,9 +33,6 @@ public class AlbumsLoadHelper {
                 super.onComplete(responses);
                 List<CustomAlbum> albums = new ArrayList<>();
                 addAlbum(responses[1], albums, CustomAlbumType.PhotosWithMe);
-                addAlbum(responses[2], albums, CustomAlbumType.PhotosFromMyProfile);
-                addAlbum(responses[3], albums, CustomAlbumType.SavedPhotos);
-                addAlbum(responses[4], albums, CustomAlbumType.WallPhotos);
                 callback.onSuccess(albums, new VKList<VKApiPhotoAlbum>(responses[0].json, VKApiPhotoAlbum.class));
             }
 

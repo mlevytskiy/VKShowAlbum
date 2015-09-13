@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vkshowalbum.mlevytskiy.com.vkshowalbum.R;
-import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.albumsAdapterImpl.CustomAlbum;
-import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.albumsAdapterImpl.Item;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbum;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.Album;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.albumsAdapterImpl.ViewHolder;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoader;
 
@@ -24,7 +24,7 @@ import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoader;
  */
 public class AlbumsAdapter extends BaseAdapter {
 
-    private List<Item> items;
+    private List<Album> items;
     private LayoutInflater layoutInflater;
     private ImageLoader imageLoader;
 
@@ -35,10 +35,10 @@ public class AlbumsAdapter extends BaseAdapter {
 
         items = new ArrayList<>();
         for (CustomAlbum customAlbum : customAlbums) {
-            items.add(new Item(customAlbum));
+            items.add(new Album(customAlbum));
         }
         for (VKApiPhotoAlbum vkApiPhotoAlbum : vkList) {
-            items.add(new Item(vkApiPhotoAlbum));
+            items.add(new Album(vkApiPhotoAlbum));
         }
     }
 
@@ -48,7 +48,7 @@ public class AlbumsAdapter extends BaseAdapter {
     }
 
     @Override
-    public Item getItem(int position) {
+    public Album getItem(int position) {
         return items.get(position);
     }
 
@@ -61,7 +61,7 @@ public class AlbumsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.item, parent, false);
+            convertView = layoutInflater.inflate(R.layout.item_album, parent, false);
             viewHolder = new ViewHolder(convertView, imageLoader);
             convertView.setTag(viewHolder);
         } else {
@@ -72,7 +72,7 @@ public class AlbumsAdapter extends BaseAdapter {
     }
 
     public void loadIcon(ImageView imageView, int position) {
-        Item item = getItem(position);
+        Album item = getItem(position);
         imageLoader.loadImage(imageView, item.isCustomAlbum() ? item.getCustomAlbum().iconUrl :
                                                                 item.getVkApiPhotoAlbum().thumb_src);
     }

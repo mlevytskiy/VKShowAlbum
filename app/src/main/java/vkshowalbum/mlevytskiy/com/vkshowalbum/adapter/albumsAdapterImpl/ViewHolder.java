@@ -7,6 +7,8 @@ import android.widget.TextView;
 import com.vk.sdk.api.model.VKApiPhotoAlbum;
 
 import vkshowalbum.mlevytskiy.com.vkshowalbum.R;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbum;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.Album;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoader;
 
 /**
@@ -24,7 +26,7 @@ public class ViewHolder {
         this.imageLoader = imageLoader;
     }
 
-    public void fill(Item item) {
+    public void fill(Album item) {
         if (item.isCustomAlbum()) {
             fill(item.getCustomAlbum());
         } else {

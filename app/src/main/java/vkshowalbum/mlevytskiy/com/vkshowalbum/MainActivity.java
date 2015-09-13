@@ -1,5 +1,6 @@
 package vkshowalbum.mlevytskiy.com.vkshowalbum;
 
+import android.content.*;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.github.johnpersano.supertoasts.SuperActivityToast;
 import com.vk.sdk.VKSdk;
@@ -22,7 +22,7 @@ import com.vk.sdk.api.model.VKList;
 import java.util.List;
 
 import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.AlbumsAdapter;
-import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.albumsAdapterImpl.CustomAlbum;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbum;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoader;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoadingState;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.support.AlbumsLoadHelper;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private GridView gridView;
     private AlbumsAdapter albumsAdapter;
+    private int userId;
 
     @CallSuper
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +59,15 @@ public class MainActivity extends AppCompatActivity {
         if (imageLoadingState == ImageLoadingState.error) {
             albumsAdapter.loadIcon(imageView, position);
         } else {
-            Toast.makeText(getBaseContext(), "Show album", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, ConcreteAlbumActivity.class);
+            intent.putExtra(ConcreteAlbumActivity.ALBUM, albumsAdapter.getItem(position));
+            intent.putExtra(ConcreteAlbumActivity.USER_ID, userId);
+            startActivity(intent);
         }
     }
 
     public void onClickRefresh(View view) {
+        gridView.setEmptyView(null);
         gridView.setAdapter(null);
         loadingAlbums();
     }
@@ -74,11 +79,12 @@ public class MainActivity extends AppCompatActivity {
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
-                int userId = ((VKApiUserFull) ((VKList) response.parsedModel).get(0)).getId();
+                userId = ((VKApiUserFull) ((VKList) response.parsedModel).get(0)).getId();
                 new AlbumsLoadHelper().load(userId, new AlbumsLoadHelper.Callback() {
                     @Override
                     public void onSuccess(List<CustomAlbum> customAlbums, VKList<VKApiPhotoAlbum> userAlbums) {
                         albumsAdapter = new AlbumsAdapter(getBaseContext(), userAlbums, customAlbums);
+                        gridView.setEmptyView(findViewById(android.R.id.empty));
                         gridView.setAdapter(albumsAdapter);
                         superActivityToast.dismiss();
                     }

@@ -4,12 +4,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="load_albums">load albums</string>
+    <string name="load_photos">load photos</string>
     <string name="error">"Error =)"</string>
 
-    <string name="photos_from_my_profile">Photos from my profile</string>
     <string name="photos_with_me">Photos with me</string>
-    <string name="saved_photos">Saved photos</string>
-    <string name="wall_photos">Photos from my wall</string>
-    <string name="photos_on_my_wall">Photos on my wall</string>
+    <string name="didnt_find_any_photos">Didn\'t find any photos</string>
 
 </resources>
