@@ -17,4 +17,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <ImageButton
+        android:id="@+id/try_again"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_try_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClickTryLoadImageAgain"
+        android:visibility="invisible" />
+
 </FrameLayout>

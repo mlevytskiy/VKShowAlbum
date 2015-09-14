@@ -47,17 +47,7 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_concrete_album);
         gridView = (GridView) findViewById(R.id.grid_view);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ConcreteAlbumActivity.this, PhotoActivity.class);
-                VKApiPhoto vkApiPhoto = adapter.getItem(position);
-                String url = PhotoUtils.getMaxPhotoSize(vkApiPhoto);
-                intent.putExtra(PhotoActivity.TITLE, vkApiPhoto.text);
-                intent.putExtra(PhotoActivity.URL, url);
-                startActivity(intent);
-            }
-        });
+        setListenerOnGridView();
         if (bundle != null) {
             //do nothing
         } else {
@@ -79,6 +69,20 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
         }
     }
 
+    private void setListenerOnGridView() {
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(ConcreteAlbumActivity.this, PhotoActivity.class);
+                VKApiPhoto vkApiPhoto = adapter.getItem(position);
+                String url = PhotoUtils.getMaxPhotoSize(vkApiPhoto);
+                intent.putExtra(PhotoActivity.TITLE, vkApiPhoto.text);
+                intent.putExtra(PhotoActivity.URL, url);
+                startActivity(intent);
+            }
+        });
+    }
+
     @CallSuper
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         album = savedInstanceState.getParcelable(ALBUM);
@@ -86,14 +90,11 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
         albumId = album.isCustomAlbum() ? 0 : album.getVkApiPhotoAlbum().getId();
         photos = savedInstanceState.getParcelable(PHOTOS);
 
-        if (album.isCustomAlbum()) {
-            gridView.setAdapter(new AlbumAdapter(getBaseContext(), album.getCustomAlbum().photos));
-        } else {
-            gridView.setAdapter(new AlbumAdapter(getBaseContext(), photos));
-        }
+        adapter = album.isCustomAlbum() ? new AlbumAdapter(getBaseContext(), album.getCustomAlbum().photos) :
+                                          new AlbumAdapter(getBaseContext(), photos);
+        gridView.setAdapter(adapter);
 
         setTitle(savedInstanceState.getString(TITLE));
-
     }
 
     @CallSuper
