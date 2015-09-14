@@ -23,13 +23,13 @@ import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbumType;
  */
 public class AlbumsLoadHelper {
 
-    public void loadWithoutUserId(final Callback callback, final InitUserIdCallback initUserIdCallback) {
+    public void loadWithoutUserId(final Callback callback, final GetUserIdCallback getUserIdCallback) {
         VKRequest request = VKApi.users().get();
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 int userId = ((VKApiUserFull) ((VKList) response.parsedModel).get(0)).getId();
-                initUserIdCallback.onSuccess(userId);
+                getUserIdCallback.onSuccess(userId);
                 load(userId, callback);
             }
         });

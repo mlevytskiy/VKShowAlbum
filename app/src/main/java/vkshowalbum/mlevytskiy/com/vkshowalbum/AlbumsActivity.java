@@ -25,7 +25,7 @@ import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.CustomAlbum;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoader;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoadingState;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.support.AlbumsLoadHelper;
-import vkshowalbum.mlevytskiy.com.vkshowalbum.support.InitUserIdCallback;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.support.GetUserIdCallback;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.support.ToastFactory;
 
 public class AlbumsActivity extends AppCompatActivity {
@@ -143,7 +143,7 @@ public class AlbumsActivity extends AppCompatActivity {
         };
 
         if (userId == 0) {
-            albumsLoadHelper.loadWithoutUserId(callback, new InitUserIdCallback() {
+            albumsLoadHelper.loadWithoutUserId(callback, new GetUserIdCallback() {
                 @Override
                 public void onSuccess(int userId) {
                     AlbumsActivity.this.userId = userId;
