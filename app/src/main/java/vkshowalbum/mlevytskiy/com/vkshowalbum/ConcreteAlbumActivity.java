@@ -35,6 +35,7 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
     public static final String USER_ID = "userId";
     private static final String PHOTOS = "photos";
     private static final String TITLE = "title";
+    private static final String HAS_EMPTY_VIEW = "isEmptyViewEnable";
 
     private GridView gridView;
     private Album album;
@@ -105,6 +106,10 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
         gridView.setAdapter(adapter);
 
         setTitle(savedInstanceState.getString(TITLE));
+        boolean hasEmptyView = savedInstanceState.getBoolean(HAS_EMPTY_VIEW);
+        if (hasEmptyView) {
+            gridView.setEmptyView(findViewById(android.R.id.empty));
+        }
     }
 
     @CallSuper
@@ -113,6 +118,7 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
         savedInstanceState.putInt(USER_ID, userId);
         savedInstanceState.putParcelable(PHOTOS, photos);
         savedInstanceState.putString(TITLE, getTitle().toString());
+        savedInstanceState.putBoolean(HAS_EMPTY_VIEW, gridView.getEmptyView() != null);
     }
 
     @Override
@@ -151,6 +157,7 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
     public void onClickRefresh(View view) {
         if (album.isCustomAlbum()) {
             //do nothing
+            //todo@m.levytskiy: we do this later! =)
         } else {
             gridView.setEmptyView(null);
             gridView.setAdapter(null);
