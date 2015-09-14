@@ -32,6 +32,13 @@ public class AlbumsLoadHelper {
                 getUserIdCallback.onSuccess(userId);
                 load(userId, callback);
             }
+
+            @Override
+            public void onError(VKError error) {
+                super.onError(error);
+                callback.onError(error);
+            }
+
         });
     }
 
