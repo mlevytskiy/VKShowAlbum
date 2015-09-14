@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.github.johnpersano.supertoasts.SuperActivityToast;
 import com.vk.sdk.api.VKApiConst;
@@ -20,6 +21,8 @@ import com.vk.sdk.api.model.VKList;
 
 import vkshowalbum.mlevytskiy.com.vkshowalbum.adapter.AlbumAdapter;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.businessObject.Album;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoader;
+import vkshowalbum.mlevytskiy.com.vkshowalbum.imageLoader.ImageLoadingState;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.support.PhotoUtils;
 import vkshowalbum.mlevytskiy.com.vkshowalbum.support.ToastFactory;
 
@@ -73,12 +76,19 @@ public class ConcreteAlbumActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ConcreteAlbumActivity.this, PhotoActivity.class);
-                VKApiPhoto vkApiPhoto = adapter.getItem(position);
-                String url = PhotoUtils.getMaxPhotoSize(vkApiPhoto);
-                intent.putExtra(PhotoActivity.TITLE, vkApiPhoto.text);
-                intent.putExtra(PhotoActivity.URL, url);
-                startActivity(intent);
+                ImageView photo = (ImageView) view;
+                ImageLoadingState imageLoadingState = (ImageLoadingState) photo.getTag(ImageLoader.IMAGE_LOADER_TAG_KEY);
+
+                if (imageLoadingState == ImageLoadingState.error) {
+                    adapter.loadIcon(photo, position);
+                } else {
+                    Intent intent = new Intent(ConcreteAlbumActivity.this, PhotoActivity.class);
+                    VKApiPhoto vkApiPhoto = adapter.getItem(position);
+                    String url = PhotoUtils.getMaxPhotoSize(vkApiPhoto);
+                    intent.putExtra(PhotoActivity.TITLE, vkApiPhoto.text);
+                    intent.putExtra(PhotoActivity.URL, url);
+                    startActivity(intent);
+                }
             }
         });
     }

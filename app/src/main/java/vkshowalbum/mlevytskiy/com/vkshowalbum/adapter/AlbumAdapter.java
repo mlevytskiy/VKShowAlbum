@@ -54,4 +54,9 @@ public class AlbumAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void loadIcon(ImageView imageView, int position) {
+        VKApiPhoto item = getItem(position);
+        imageLoader.loadImage(imageView, item.photo_130);
+    }
+
 }
